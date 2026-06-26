@@ -1,20 +1,22 @@
-d=[(['Sunny','Warm','Normal'],'Yes'),
-   (['Sunny','Warm','High'],'Yes'),
-   (['Rainy','Cold','High'],'No'),
-   (['Sunny','Warm','Normal'],'Yes')]
+d=[
+ ['Sunny','Warm','Normal','Yes'],
+ ['Sunny','Warm','High','Yes'],
+ ['Rainy','Cold','High','No'],
+ ['Sunny','Warm','High','Yes']
+]
 
-S=['0']*3
-for x,y in d:
-    if y=='Yes':
-        S=[x[i] if S[i]=='0' else S[i] if S[i]==x[i] else '?' for i in range(3)]
-
+X,Y=[i[:-1] for i in d],[i[-1] for i in d]
+S=X[0][:]
 G=[['?']*len(S)]
-for x,y in data:
-    if y=='No':
-        G=[h for g in G
-           for i in range(len(x))
-           if g[i]=='?' and S[i]!=x[i]
-           for h in [[*g[:i],S[i],*g[i+1:]]]]
-print("Find-S Hypothesis:", S)
-print("Specific Boundary S:", S)
-print("General Boundary G:", G)
+
+for i in range(len(X)):
+    if Y[i]=='Yes':
+        S=[S[j] if S[j]==X[i][j] else '?' for j in range(len(S))]
+    else:
+        G=[g[:j]+[S[j]]+g[j+1:] for g in G
+           for j in range(len(S))
+           if g[j]=='?' and S[j]!=X[i][j]]
+
+    print(f"\nDataset {i+1}: {d[i]}")
+    print("S =", S)
+    print("G =", G)
