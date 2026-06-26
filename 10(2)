@@ -1,0 +1,41 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import *
+
+X, y = load_digits(return_X_y=True)
+x1, x2, y1, y2 = train_test_split(X, y, test_size=0.3, random_state=42)
+
+yb1 = (y1 == 5)
+yb2 = (y2 == 5)
+
+b = LogisticRegression(max_iter=1000)
+b.fit(x1, yb1)
+p = b.predict(x2)
+
+print("===== Binary Classification =====")
+print("Accuracy:", accuracy_score(yb2, p))
+print(classification_report(yb2, p))
+print(confusion_matrix(yb2, p))
+
+# ===== Multiclass Classification =====
+m = LogisticRegression(max_iter=1000)
+m.fit(x1, y1)
+p = m.predict(x2)
+
+print("\n===== Multiclass Classification =====")
+print("Accuracy:", accuracy_score(y2, p))
+print(classification_report(y2, p))
+print(confusion_matrix(y2, p))
+
+# ===== Error Analysis =====
+mis = [i for i in range(len(y2)) if y2[i] != p[i]]
+
+plt.figure(figsize=(8,2))
+for i, j in enumerate(mis[:5]):
+    plt.subplot(1,5,i+1)
+    plt.imshow(x2[j].reshape(8,8), cmap="gray")
+    plt.title(f"Digital label: {i+1}")
+    plt.axis("off")
+plt.show()
